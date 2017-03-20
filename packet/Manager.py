@@ -71,8 +71,12 @@ class Manager(BaseAPI):
         return devices
 
     def create_device(self, project_id, hostname, plan, facility,
-                      operating_system, billing_cycle="hourly", userdata="",
-                      locked=False, features={}):
+                  operating_system, billing_cycle="hourly", userdata="",
+                  locked=False, features={}, ipxe_script_url=''):
+
+        if ipxe_script_url != '':
+            operating_system = 'custom_ipxe'
+
         params = {
             'hostname': hostname,
             'project_id': project_id,
@@ -83,6 +87,7 @@ class Manager(BaseAPI):
             'userdata': userdata,
             'locked': locked,
             'features': features,
+            'ipxe_script_url': ipxe_script_url,
         }
         data = self.call_api('projects/%s/devices' % project_id, type='POST', params=params)
         return Device(data, self)
